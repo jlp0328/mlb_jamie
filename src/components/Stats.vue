@@ -1,6 +1,5 @@
 <template>
   <div>
-    <li v-for="header in this.headers">{{header.name}}</li>
   </div>
 </template>
 
