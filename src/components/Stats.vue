@@ -1,5 +1,19 @@
 <template>
-  <div>
+  <div class="main-container">
+    <div class="pic-container">
+      <img :src="`${this.player.image}`">
+      <h2>{{this.player.name}}</h2>
+    </div>
+    <div>
+      <dl>
+        <dt>Total Homeruns</dt>
+        <dd>{{this.player.totalHR}}</dd>
+      </dl>
+      <dl>
+        <dt>Total RBI's</dt>
+        <dd>{{this.player.totalRBI}}</dd>
+      </dl>
+    </div>
   </div>
 </template>
 
@@ -7,73 +21,43 @@
 import axios from "axios";
 import _ from "lodash";
 
+import statsService from "../stats.service";
 import Players from "../config";
 
 export default {
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
-      playerData: {},
-      headers: [],
-      seasonData: []
+      player: []
     };
   },
-  methods: {
-    async fetchData() {
-      let response;
-      try {
-        response = await axios.get(`${this.baseUrl}${Players.BRYCE_HARPER}`);
-      } catch (err) {
-        console.log(err);
-      }
-      return response.data;
-    },
-
-    async createPlayerObject() {
-      this.playerData = await this.fetchData();
-      this.headers = this.playerData.header;
-      this.seasonData = this.playerData.rows;
-
-      try {
-        this.headers = this.headers.map(elem => {
-          return elem.label;
-        });
-
-        this.seasonData = this.seasonData.map(game => {
-          let newArr = _.zipObject(this.headers, game);
-          return newArr;
-        });
-
-        let totalHomeRuns = this.totalDataPoint(this.seasonData, 'HR');
-        let totalRunsBattedIn = this.totalDataPoint(this.seasonData,'RBI');
-        let totalStrikeOuts = this.totalDataPoint(this.seasonData, 'K');
-        console.log(totalHomeRuns, totalRunsBattedIn, totalStrikeOuts);
-        
-      } catch (err) {
-        console.log(err);
-      }
-    },
-
-    calculateTotals(data) {
-      let calculate = (acc, current) => acc + current;
-      let total = data.reduce(calculate);
-      return total;
-    },
-
-    totalDataPoint(data, stat) {
-      let values = data.map(elem => {
-        return elem[stat];
-      });
-
-      let total = this.calculateTotals(values);
-      return total;
-    }
-  },
+  methods: {},
   async created() {
-    let seasonStats = await this.createPlayerObject();
+    this.player = this.$route.query.player;
+    console.log(this.player);
   }
 };
 </script>
 
 <style scoped>
+.main-container {
+  display: grid;
+  grid-template-rows: 40% 60%;
+  grid-template-columns: 40% 60%;
+  height: 100vh;
+}
+
+.pic-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  border-radius: 15px;
+}
+
+dl {
+  display: flex;
+}
 </style>
