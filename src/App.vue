@@ -23,7 +23,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background: linear-gradient(#93a5cf, #e2d1c3);
+  height: 98vh;
 }
 
 .stats-enter-active {

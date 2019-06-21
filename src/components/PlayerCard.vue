@@ -3,7 +3,7 @@
     <router-link :to="{path: id, query: {player: player}}">
       <div class="baseball-card zoom" :style='{ backgroundImage: "url(" + player.image + ")", }'>
         <div class="team">
-          <img :src="`${player.team}`">
+          <img :src="`${player.teamPic}`">
         </div>
         <div class="name">
           <h2>{{player.name}}</h2>
@@ -46,13 +46,14 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: whitesmoke;
+  background-color: #EBEBEB;
+  /* background-color: whitesmoke; */
   background-repeat: no-repeat;
   background-position: 50% 40%;
   height: 263px;
   width: 175px;
   /* border: 1px solid black; */
-  box-shadow: 10px 10px 5px 0px rgba(117,109,117,1);
+  box-shadow: 0 0 35px black;
 }
 
 .team {
