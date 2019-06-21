@@ -31,7 +31,7 @@ export default {
     try {
       //Getting all players data at once
       if (_.isPlainObject(players)) {
-        for (var key in players) {
+        for (let key in players) {
           let person = players[key];
 
           let url = `${BASE_URL}${person}`;
@@ -76,7 +76,6 @@ export default {
 
         return seasonData;
       });
-
     } catch (err) {
       console.log(err);
     }
@@ -134,31 +133,69 @@ export default {
     return (obp + slugging).toFixed(3).replace(/\b0\b/g, "");
   },
 
-  createGameObj(grouped) {
-    let stats = [];
+  createChartData(grouped) {
+    // let allStats = [];
+    let teamArr = [];
+    let allAvg = [];
+    let allOps = [];
 
-    for (var key in grouped) {
-      let teamObj = {};
+    for (let key in grouped) {
+      let index = Object.keys(grouped).indexOf(key);
+      
+      teamArr[index] = key;
+    //   let teamObj = {};
+    //   teamObj[key] = {};
       let totals = this.getTotalsAllLabels(grouped[key]);
-      if (MONTHS.includes(key)) {
-        teamObj["month"] = key;
-      } else {
-        teamObj["teamName"] = key;
-        teamObj["teamPic"] = grouped[key][0].opponentImage;
-      }
 
-    teamObj["avg"] = this.calcBattingAvg(totals);
-      teamObj["obp"] = this.calcObp(totals);
-      teamObj["slugging"] = this.calcSlugging(totals);
-      teamObj["ops"] = this.calcOps(teamObj.obp, teamObj.slugging);
-      teamObj["hr"] = totals.HR;
-      teamObj["rbi"] = totals.RBI;
-      teamObj["k"] = totals.K;
+      let obp = this.calcObp(totals);
+      let slugging = this.calcSlugging(totals);
+      let avg = this.calcBattingAvg(totals);
+      let ops = this.calcOps(obp, slugging);
 
-      stats.push(teamObj);
+      allAvg[index] = avg;
+      allOps[index] = ops;
+
+    //   teamObj[key]["avg"] = avg;
+    //   teamObj[key]["ops"] = ops;
+      //   [
+      //     {
+      //         Team: {
+      //             avg: x,
+      //             obs: y
+      //         }
+      //     }
+      //   ]
+
+      //   if (stat === "avg") {
+      //     teamObj[key] = this.calcBattingAvg(totals);
+      //   } else if (stat === "ops") {
+      //     teamObj[key] = this.calcOps(obp, slugging);
+      //   } else if (stat === "hr") {
+      //     teamObj[key] = totals.HR;
+      //   } else if (stat === "k") {
+      //     teamObj[key] = totals.K;
+      //   }
+
+      //   if (MONTHS.includes(key) && stat === 'avg') {
+      //     // teamObj["month"] = key;
+      //     teamObj[key] = this.calcBattingAvg(totals);
+      //   } else {
+      //     teamObj["teamName"] = key;
+      //     teamObj["teamPic"] = grouped[key][0].opponentImage;
+      //   }
+
+      // teamObj["avg"] = this.calcBattingAvg(totals);
+      //   teamObj["obp"] = this.calcObp(totals);
+      //   teamObj["slugging"] = this.calcSlugging(totals);
+      //   teamObj["ops"] = this.calcOps(teamObj.obp, teamObj.slugging);
+      //   teamObj["hr"] = totals.HR;
+      //   teamObj["rbi"] = totals.RBI;
+      //   teamObj["k"] = totals.K;
+
+    //   allStats.push(teamObj);
     }
 
-    return stats;
+    return [teamArr, allAvg, allOps];
   },
 
   //Create view model with player
@@ -177,7 +214,10 @@ export default {
 
       //Calculate player totals based on opponent
       let opps = _.groupBy(arr, "opponent");
-      let opponentStats = this.createGameObj(opps);
+      let oppAvgOps = this.createChartData(opps);
+      console.log(oppAvgOps);
+      //   let oppHr = this.createChartData(opps, "hr");
+      //   let oppK = this.createChartData(opps, "k");
 
       //Calculate player totals based on month
       arr.forEach(elem => {
@@ -186,7 +226,12 @@ export default {
       });
 
       let days = _.groupBy(arr, "gameMonth");
-      let monthStats = this.createGameObj(days);
+      let monthAvgOps = this.createChartData(days);
+
+      //   let monthAvg = this.createChartData(days, "avg");
+      //   let monthOps = this.createChartData(days, "ops");
+      //   let monthHr = this.createChartData(days, "hr");
+      //   let monthK = this.createChartData(days, "k");
 
       arr = {
         id: index + 1,
@@ -201,8 +246,16 @@ export default {
         totalHR: sum.HR,
         totalRBI: sum.RBI,
         totalK: sum.K,
-        opponentStats, 
-        monthStats
+        // oppAvg,
+        // oppOps,
+        // oppHr,
+        // oppK,
+        oppAvgOps,
+        monthAvgOps
+        // monthAvg,
+        // monthOps,
+        // monthHr,
+        // monthK
       };
 
       return arr;

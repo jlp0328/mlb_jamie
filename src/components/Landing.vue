@@ -35,6 +35,7 @@ export default {
 <style scoped>
 .landing-wrapper {
   display: grid;
+  align-items: center;
   height: 100%;
   grid-template: 1fr 3fr / 100%;
   overflow: hidden;
@@ -43,14 +44,16 @@ export default {
 
 h1 {
   color: white;
+  font-size: 48px;
 }
 .player-container {
   display: grid;
   grid-template-rows: 100%;
   grid-template-columns: repeat(3, 1fr);
   justify-items: center;
-  align-items: center;
-  height: 100%;
+  align-items: start;
+  height: 90%;
+  padding-top: 10%;
 }
 
 img {
