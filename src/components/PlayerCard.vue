@@ -47,12 +47,10 @@ img {
   flex-direction: column;
   justify-content: space-between;
   background-color: #EBEBEB;
-  /* background-color: whitesmoke; */
   background-repeat: no-repeat;
   background-position: 50% 40%;
   height: 263px;
   width: 175px;
-  /* border: 1px solid black; */
   box-shadow: 0 0 35px black;
 }
 

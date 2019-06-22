@@ -134,7 +134,6 @@ export default {
   },
 
   createChartData(grouped) {
-    // let allStats = [];
     let teamArr = [];
     let allAvg = [];
     let allOps = [];
@@ -143,8 +142,6 @@ export default {
       let index = Object.keys(grouped).indexOf(key);
       
       teamArr[index] = key;
-    //   let teamObj = {};
-    //   teamObj[key] = {};
       let totals = this.getTotalsAllLabels(grouped[key]);
 
       let obp = this.calcObp(totals);
@@ -154,45 +151,6 @@ export default {
 
       allAvg[index] = avg;
       allOps[index] = ops;
-
-    //   teamObj[key]["avg"] = avg;
-    //   teamObj[key]["ops"] = ops;
-      //   [
-      //     {
-      //         Team: {
-      //             avg: x,
-      //             obs: y
-      //         }
-      //     }
-      //   ]
-
-      //   if (stat === "avg") {
-      //     teamObj[key] = this.calcBattingAvg(totals);
-      //   } else if (stat === "ops") {
-      //     teamObj[key] = this.calcOps(obp, slugging);
-      //   } else if (stat === "hr") {
-      //     teamObj[key] = totals.HR;
-      //   } else if (stat === "k") {
-      //     teamObj[key] = totals.K;
-      //   }
-
-      //   if (MONTHS.includes(key) && stat === 'avg') {
-      //     // teamObj["month"] = key;
-      //     teamObj[key] = this.calcBattingAvg(totals);
-      //   } else {
-      //     teamObj["teamName"] = key;
-      //     teamObj["teamPic"] = grouped[key][0].opponentImage;
-      //   }
-
-      // teamObj["avg"] = this.calcBattingAvg(totals);
-      //   teamObj["obp"] = this.calcObp(totals);
-      //   teamObj["slugging"] = this.calcSlugging(totals);
-      //   teamObj["ops"] = this.calcOps(teamObj.obp, teamObj.slugging);
-      //   teamObj["hr"] = totals.HR;
-      //   teamObj["rbi"] = totals.RBI;
-      //   teamObj["k"] = totals.K;
-
-    //   allStats.push(teamObj);
     }
 
     return [teamArr, allAvg, allOps];
@@ -215,9 +173,6 @@ export default {
       //Calculate player totals based on opponent
       let opps = _.groupBy(arr, "opponent");
       let oppAvgOps = this.createChartData(opps);
-      console.log(oppAvgOps);
-      //   let oppHr = this.createChartData(opps, "hr");
-      //   let oppK = this.createChartData(opps, "k");
 
       //Calculate player totals based on month
       arr.forEach(elem => {
@@ -227,11 +182,6 @@ export default {
 
       let days = _.groupBy(arr, "gameMonth");
       let monthAvgOps = this.createChartData(days);
-
-      //   let monthAvg = this.createChartData(days, "avg");
-      //   let monthOps = this.createChartData(days, "ops");
-      //   let monthHr = this.createChartData(days, "hr");
-      //   let monthK = this.createChartData(days, "k");
 
       arr = {
         id: index + 1,
@@ -246,16 +196,8 @@ export default {
         totalHR: sum.HR,
         totalRBI: sum.RBI,
         totalK: sum.K,
-        // oppAvg,
-        // oppOps,
-        // oppHr,
-        // oppK,
         oppAvgOps,
         monthAvgOps
-        // monthAvg,
-        // monthOps,
-        // monthHr,
-        // monthK
       };
 
       return arr;

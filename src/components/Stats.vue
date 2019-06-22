@@ -7,22 +7,18 @@
     </router-link>
     <div class="pic-stats-wrapper">
       <div class="pic-name">
-        <div>
-          <img :src="`${this.player.image}`">
-          <h2>{{this.player.name}}</h2>
+        <div class="team-pic">
+          <img :src="`${this.player.teamPic}`">
         </div>
+        <img :src="`${this.player.image}`">
+        <h2>{{this.player.name}}</h2>
       </div>
 
       <div class="stats">
+        <h3>
+          <span class="red">2018</span> @ The Plate
+        </h3>
         <div class="all-stats">
-          <p>
-            <strong>HR:</strong>
-            {{this.player.totalHR}}
-          </p>
-          <p>
-            <strong>RBI:</strong>
-            {{this.player.totalRBI}}
-          </p>
           <p>
             <strong>AVG:</strong>
             {{this.player.avg}}
@@ -32,12 +28,20 @@
             {{this.player.ops}}
           </p>
           <p>
-            <strong>K:</strong>
-            {{this.player.totalK}}
+            <strong>HR:</strong>
+            {{this.player.totalHR}}
+          </p>
+          <p>
+            <strong>RBI:</strong>
+            {{this.player.totalRBI}}
           </p>
           <p>
             <strong>OBP:</strong>
             {{this.player.obp}}
+          </p>
+          <p>
+            <strong>K:</strong>
+            {{this.player.totalK}}
           </p>
         </div>
         <div class="toggle-chart">
@@ -45,11 +49,24 @@
             <h4>Batting Average and OPS By:</h4>
           </div>
           <div class="radio">
-            <input type="radio" name="stats" value="opponent" id="opp-stats" checked>
+            <input
+              type="radio"
+              name="stats"
+              value="opponent"
+              id="opp-stats"
+              @click="toggleMainLabel()"
+              checked
+            >
             <label for="opp-stats">Opponent</label>
           </div>
           <div class="radio">
-            <input type="radio" name="stats" value="month" id="mon-stats">
+            <input
+              type="radio"
+              name="stats"
+              value="month"
+              id="mon-stats"
+              @click="toggleMainLabel()"
+            >
             <label for="mon-stats">Month</label>
           </div>
         </div>
@@ -80,44 +97,40 @@ export default {
       labels: [],
       avgData: [],
       opsData: []
-      //   opps: [],
-      //   months: [],
-      //   oppAvg: [],
-      //   oppOps: [],
-      //   monthAvg: [],
-      //   monthOps: []
     };
   },
-  computed: {
+  methods: {
     toggleMainLabel() {
       if (this.showOpponent) {
+        this.showOpponent = false;
+        [this.labels, this.avgData, this.opsData] = this.player.monthAvgOps;
+        this.createChart("playerStats");
+      } else {
+        this.showOpponent = true;
         return ([
           this.labels,
           this.avgData,
           this.opsData
         ] = this.player.oppAvgOps);
-      } else {
-        [this.labels, this.avgData, this.opsData] = this.player.monthAvgOps;
+        this.createChart("playerStats");
       }
-    }
-  },
-  methods: {
+    },
     createChart(chartId, chartData) {
       const ctx = document.getElementById(chartId);
       let myChart = new Chart(ctx, {
         type: "line",
         data: {
-          labels: this.labels, //need ternary fn to toggle if opp vs. month
+          labels: this.labels,
           datasets: [
             {
               label: "Batting Average",
-              data: this.avgData, //need ternary fn to toggle if opp vs. month
+              data: this.avgData,
               backgroundColor: "#EBEBEB"
             },
             {
               label: "OPS",
               data: this.opsData,
-              backgroundColor: "#bf0d3e" //need ternary fn to toggle if opp vs. month
+              backgroundColor: "#bf0d3e"
             }
           ]
         },
@@ -128,9 +141,41 @@ export default {
             duration: 2000,
             easing: "easeInCirc"
           },
+          legend: {
+            labels: {
+              fontColor: "#EBEBEB",
+              fontSize: 16
+            }
+          },
+          tooltips: {
+            mode: "label"
+          },
+          hover: {
+            mode: "nearest",
+            intersect: true
+          },
           scales: {
+            xAxes: [
+              {
+                gridLines: {
+                  color: "#EBEBEB"
+                },
+                ticks: {
+                  fontColor: "#EBEBEB"
+                }
+              }
+            ],
             yAxes: [
               {
+                gridLines: {
+                  color: "#EBEBEB"
+                },
+                ticks: {
+                  fontColor: "#EBEBEB"
+                },
+                scaleLabel: {
+                  fontColor: "#EBEBEB"
+                },
                 afterTickToLabelConversion: function(x) {
                   for (var tick in x.ticks) {
                     if (x.ticks[tick].includes("0.")) {
@@ -151,8 +196,6 @@ export default {
 
   async created() {
     this.player = this.$route.query.player;
-    console.log(this.player);
-
     [this.labels, this.avgData, this.opsData] = this.player.oppAvgOps;
   },
   mounted() {
@@ -170,21 +213,24 @@ export default {
   grid-template: 5% 45% 50%/ 100%;
 
   background: #041e42;
-  color: #EBEBEB;
+  color: #ebebeb;
 }
 
 .back-to-main {
   text-align: left;
+  color: white;
 }
 
 .pic-stats-wrapper {
   display: grid;
-  grid-template-columns: 25% 75%;
+  grid-template-columns: 22% 78%;
 }
 
 .pic-name {
   display: grid;
-  grid-template: 70% 30% / 100%;
+  grid-template: 10% 60% 30% / 100%;
+  justify-items: center;
+  align-items: center;
 }
 
 .stats {
@@ -195,11 +241,12 @@ export default {
 
 .all-stats {
   display: grid;
-  grid-template: repeat(2, 1fr) / repeat(3, 1fr);
+  grid-template: repeat(1, 1fr) / repeat(6, 1fr);
 }
 
 .chart-container {
-  width: 90vw;
+  margin: 0 3% 0 3%;
+  width: 94%;
   height: 80%;
 }
 
@@ -213,16 +260,30 @@ export default {
   margin-left: 10px;
 }
 
-img {
+.team-pic {
   border-radius: 15px;
+  transform: translate(-50px, 20px);
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+  background-color: white;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.red {
+  color: #bf0d3e;
 }
 
 h2 {
+  margin: 0;
   font-size: 25px;
 }
 
 h3 {
   margin: 8px 0 0 0;
+  font-size: 30px;
 }
 
 label {
